@@ -1,15 +1,16 @@
 export async function searchVideos(query: string) {
   try {
-    // Isso garante que ele use a rota correta tanto local quanto na Vercel
-    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
-    const res = await fetch(`${baseUrl}/api/search?q=${encodeURIComponent(query)}`, {
-      cache: 'no-store'
-    });
+    // Usamos o caminho relativo para a API que criamos na pasta /api/search
+    const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
     
-    if (!res.ok) return [];
-    const data = await res.json();
-    return data;
+    if (!res.ok) {
+      console.error("Erro na resposta do servidor");
+      return [];
+    }
+    
+    return await res.json();
   } catch (error) {
+    console.error("Erro ao buscar vídeos:", error);
     return [];
   }
 }
