@@ -9,9 +9,23 @@ export default function Home() {
   const [videoSelecionado, setVideoSelecionado] = useState<string | null>(null);
 
   const carregarVideos = async (termo: string) => {
-    const resultados = await searchVideos(termo);
-    setVideos(resultados);
+    try {
+      const resultados = await searchVideos(termo);
+      if (resultados && resultados.length > 0) {
+        setVideos(resultados);
+      }
+    } catch (err) {
+      console.error("Erro ao carregar:", err);
+    }
   };
+
+  useEffect(() => {
+    // Dá 1 segundo para o sistema respirar antes de buscar
+    const timer = setTimeout(() => {
+      carregarVideos(busca);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     carregarVideos(busca);
